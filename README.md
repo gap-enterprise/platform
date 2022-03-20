@@ -1,2 +1,2 @@
-# front
-Module front de la plateforme
+# Platform
+La plateforme abritant tous les modules de GAP
