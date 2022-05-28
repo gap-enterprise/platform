@@ -71,6 +71,13 @@ SOFTWARE.
       <groupId>org.postgresql</groupId>
       <artifactId>postgresql</artifactId>
       <version>42.3.4</version>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.oracle.database.jdbc</groupId>
+      <artifactId>ojdbc8</artifactId>
+      <version>21.5.0.0</version>
+      <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>com.zaxxer</groupId>
@@ -81,16 +88,67 @@ SOFTWARE.
       <groupId>com.jcabi.incubator</groupId>
       <artifactId>xembly</artifactId>
       <version>0.25.0</version>
+      <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>io.surati.gap</groupId>
       <artifactId>web-base</artifactId>
-      <version>0.8.4</version>
+      <version>0.8.5</version>
+    </dependency>
+    <dependency>
+      <groupId>io.surati.gap</groupId>
+      <artifactId>admin-base</artifactId>
+      <version>0.5.6</version>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.baudoliver7</groupId>
+      <artifactId>jdbc-toolset</artifactId>
+      <version>0.1.0</version>
     </dependency>
     <dependency>
       <groupId>com.baudoliver7</groupId>
       <artifactId>takes-utils</artifactId>
       <version>0.3.1</version>
+    </dependency>
+    <dependency>
+      <groupId>org.pf4j</groupId>
+      <artifactId>pf4j</artifactId>
+      <version>3.6.0</version>
+    </dependency>
+    <dependency>
+      <groupId>io.surati.gap</groupId>
+      <artifactId>commons-utils</artifactId>
+      <version>0.5.0</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-lang3</artifactId>
+      <version>3.12.0</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.poi</groupId>
+      <artifactId>poi</artifactId>
+      <version>5.2.2</version>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
+      <version>31.1-jre</version>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.cactoos</groupId>
+      <artifactId>cactoos</artifactId>
+      <version>0.42</version>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.baudoliver7</groupId>
+      <artifactId>lightweight-db</artifactId>
+      <version>0.5.1</version>
+      <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.velocity</groupId>
@@ -132,21 +190,6 @@ SOFTWARE.
   </dependencies>
   <build>
     <plugins>
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>versions-maven-plugin</artifactId>
-        <version>2.10.0</version>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-resources-plugin</artifactId>
-        <version>3.2.0</version>
-        <configuration>
-          <nonFilteredFileExtensions>
-            <nonFilteredFileExtension>xlsx</nonFilteredFileExtension>
-          </nonFilteredFileExtensions>
-        </configuration>
-      </plugin>
       <plugin>
         <groupId>org.jacoco</groupId>
         <artifactId>jacoco-maven-plugin</artifactId>
@@ -236,6 +279,7 @@ SOFTWARE.
                 <argument>--db-url=${db.url}</argument>
                 <argument>--db-user=${db.user}</argument>
                 <argument>--db-password=${db.password}</argument>
+                <argument>--demo</argument>
                 <argument>--hit-refresh</argument>
               </arguments>
             </configuration>

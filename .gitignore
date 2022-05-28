@@ -20,6 +20,9 @@
 ### Logs ###
 logs/
 
+### Plugins ###
+plugins/
+
 ### Eclipse ###
 
 .metadata

@@ -27,22 +27,30 @@ import com.baudoliver7.jdbc.toolset.lockable.LocalLockedDataSource;
 import com.minlessika.utils.ConsoleArgs;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
+import io.surati.gap.commons.utils.pf4j.DatabaseSetup;
+import io.surati.gap.commons.utils.pf4j.ModuleRegistration;
+import io.surati.gap.commons.utils.pf4j.WebFront;
 import io.surati.gap.web.base.FkMimes;
 import io.surati.gap.web.base.TkSafe;
 import io.surati.gap.web.base.TkSafeUserAlert;
 import io.surati.gap.web.base.TkTransaction;
 import io.surati.gap.web.base.auth.SCodec;
 import io.surati.gap.web.base.auth.TkAuth;
+import java.nio.file.Paths;
 import java.sql.Connection;
+import java.util.List;
 import java.util.Map;
 import javax.sql.DataSource;
 import org.apache.commons.lang3.StringUtils;
+import org.pf4j.JarPluginManager;
+import org.pf4j.PluginManager;
 import org.takes.facets.auth.Pass;
 import org.takes.facets.auth.PsByFlag;
 import org.takes.facets.auth.PsChain;
 import org.takes.facets.auth.PsCookie;
 import org.takes.facets.auth.PsLogout;
 import org.takes.facets.flash.TkFlash;
+import org.takes.facets.fork.FkChain;
 import org.takes.facets.fork.FkRegex;
 import org.takes.facets.fork.Fork;
 import org.takes.facets.fork.TkFork;
@@ -50,7 +58,6 @@ import org.takes.facets.forward.TkForward;
 import org.takes.http.Exit;
 import org.takes.http.FtCli;
 import org.takes.tk.TkSlf4j;
-import org.takes.tk.TkText;
 
 /**
  * Entry of application.
@@ -83,7 +90,6 @@ public final class Main {
 		config.setMaximumPoolSize(psize);
 		final DataSource src = new HikariDataSource(config);
 		final DataSource lcksrc = new LocalLockedDataSource(src, Main.localconn);
-		/** run here setup phase of each module **/
 		final Pass pass = new PsChain(
 			new PsByFlag(
 				new PsByFlag.Pair(
@@ -95,32 +101,57 @@ public final class Main {
 				new SCodec()
 			)
 		);
-		final Fork pages = new FkRegex("/hello-world", new TkText("Hello world!"));
-		new FtCli(
-			new TkSlf4j(
-				new TkSafe(
-					new TkForward(
-						new TkFlash(
-							new TkAuth(
-								new TkSafeUserAlert(
-									src,
-									new TkTransaction(
-										new TkFork(
-											new FkMimes(),
-											new FkRegex("/robots\\.txt", ""),
-											pages
-										),
-										Main.localconn
-									)
-								),
-								pass
+		final PluginManager manager = new JarPluginManager(Paths.get("./plugins"));
+		try {
+			manager.loadPlugins();
+			manager.startPlugins();
+			for (ModuleRegistration registration : manager.getExtensions(ModuleRegistration.class)) {
+				registration.register();
+			}
+			for (DatabaseSetup setup : manager.getExtensions(DatabaseSetup.class)) {
+				setup.migrate(src, map.containsKey("demo"));
+			}
+			final List<WebFront> fronts = manager.getExtensions(WebFront.class);
+			if (fronts.isEmpty()) {
+				throw new IllegalArgumentException("No valid plugin has been found !");
+			}
+			Fork pages = new FkChain();
+			for (WebFront front : fronts) {
+				pages = new FkChain(
+					pages,
+					front.pages(),
+					front.pages(lcksrc),
+					front.pages(lcksrc, pass)
+				);
+			}
+			new FtCli(
+				new TkSlf4j(
+					new TkSafe(
+						new TkForward(
+							new TkFlash(
+								new TkAuth(
+									new TkSafeUserAlert(
+										src,
+										new TkTransaction(
+											new TkFork(
+												new FkMimes(),
+												new FkRegex("/robots\\.txt", ""),
+												pages
+											),
+											Main.localconn
+										)
+									),
+									pass
+								)
 							)
 						)
 					)
-				)
-			),
-			args
-		).start(Exit.NEVER);	
+				),
+				args
+			).start(Exit.NEVER);
+		} finally {
+			manager.stopPlugins();
+			manager.unloadPlugins();
+		}
 	}
-    
 }
