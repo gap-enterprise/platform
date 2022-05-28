@@ -20,3 +20,8 @@ Then, you can run the application at port `9090` with Maven like this:
 ```shell
 mvn clean integration-test -Phit-refresh -Dport=9090 -Ddb.driver=org.postgresql.Driver -Ddb.url=jdbc:postgresql://127.0.0.1:5070/db_gap -Ddb.user=gap -Ddb.password=admin --threads=10
 ```
+
+# How to add a module
+To add a module or plugin, you should generate its jar file first and add it to `plugins` folder. Make sure you add module
+dependencies to project `platform` pom.xml with scope `runtime`.
+
