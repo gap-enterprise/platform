@@ -61,6 +61,12 @@ SOFTWARE.
     <developerConnection>scm:git:git://github.com:gap-enterprise/platform.git</developerConnection>
     <url>http://github.com/gap-enterprise/platform/tree/master</url>
   </scm>
+  <properties>
+    <admin.module.version>0.5.2</admin.module.version>
+    <payment.base.module.version>0.2.4</payment.base.module.version>
+    <payment.module.version>0.2.5</payment.module.version>
+    <plugin.folder>plugins</plugin.folder>
+  </properties>
   <dependencies>
     <dependency>
       <groupId>org.takes</groupId>
@@ -196,6 +202,50 @@ SOFTWARE.
   </dependencies>
   <build>
     <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <version>2.10</version>
+        <executions>
+          <execution>
+            <id>default-cli</id>
+            <phase>package</phase>
+            <goals>
+              <goal>copy</goal>
+            </goals>
+            <configuration>
+              <artifactItems>
+                <artifactItem>
+                  <groupId>io.surati.gap</groupId>
+                  <artifactId>admin-module</artifactId>
+                  <version>${admin.module.version}</version>
+                  <type>jar</type>
+                  <overWrite>true</overWrite>
+                  <outputDirectory>${plugin.folder}</outputDirectory>
+                </artifactItem>
+                <artifactItem>
+                  <groupId>io.surati.gap</groupId>
+                  <artifactId>payment-base-module</artifactId>
+                  <version>${payment.base.module.version}</version>
+                  <type>jar</type>
+                  <overWrite>true</overWrite>
+                  <outputDirectory>${plugin.folder}</outputDirectory>
+                </artifactItem>
+                <artifactItem>
+                  <groupId>io.surati.gap</groupId>
+                  <artifactId>payment-module</artifactId>
+                  <version>${payment.module.version}</version>
+                  <type>jar</type>
+                  <overWrite>true</overWrite>
+                  <outputDirectory>${plugin.folder}</outputDirectory>
+                </artifactItem>
+              </artifactItems>
+              <overWriteReleases>false</overWriteReleases>
+              <overWriteSnapshots>true</overWriteSnapshots>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
       <plugin>
         <groupId>org.jacoco</groupId>
         <artifactId>jacoco-maven-plugin</artifactId>
