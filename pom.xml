@@ -24,7 +24,7 @@ SOFTWARE.
   </parent>
   <groupId>io.surati.gap</groupId>
   <artifactId>platform</artifactId>
-  <version>1.0-SNAPSHOT</version>
+  <version>0.1.2</version>
   <description>GAP platform</description>
   <url>https://github.com/gap-enterprise/platform</url>
   <inceptionYear>2022</inceptionYear>
