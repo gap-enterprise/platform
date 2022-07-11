@@ -147,7 +147,7 @@ SOFTWARE.
     <dependency>
       <groupId>org.cactoos</groupId>
       <artifactId>cactoos</artifactId>
-      <version>0.42</version>
+      <version>0.50.1</version>
       <scope>runtime</scope>
     </dependency>
     <dependency>
